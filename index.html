@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research Paper Title</title>
+    <title>Leap-SLAM</title>
     <style>
-        /* 基础页面设置 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
@@ -15,9 +14,8 @@
             padding: 40px 20px;
         }
 
-        /* 居中且带有阴影的论文主容器 */
         .paper-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #ffffff;
             padding: 50px;
@@ -25,33 +23,36 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        /* 标题样式 */
         h1.title {
             font-size: 2.2em;
             color: #2c3e50;
             text-align: center;
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
             line-height: 1.3;
         }
 
-        /* 作者及机构样式 */
         .authors {
-            font-size: 1.2em;
+            font-size: 1.15em;
             text-align: center;
             color: #34495e;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
+            font-weight: 500;
         }
         
         .affiliations {
-            font-size: 0.95em;
+            font-size: 0.9em;
             text-align: center;
-            color: #7f8c8d;
+            color: #666;
             margin-bottom: 30px;
             font-style: italic;
+            line-height: 1.8;
         }
 
-        /* 摘要区块标题样式 */
+        .affiliations span {
+            display: block;
+        }
+
         .section-title {
             font-size: 1.5em;
             color: #2c3e50;
@@ -61,14 +62,12 @@
             margin-bottom: 20px;
         }
 
-        /* 摘要正文内容排版 */
         .abstract-text {
             font-size: 1.05em;
-            text-align: justify; /* 两端对齐，看起来更像正式论文 */
+            text-align: justify;
             color: #444;
         }
 
-        /* 按钮组样式（PDF、代码等链接） */
         .button-group {
             text-align: center;
             margin-top: 20px;
@@ -92,7 +91,15 @@
             background-color: #34495e;
         }
 
-        /* 移动端适配 */
+        .funding-info {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
             .paper-container {
                 padding: 30px 20px;
@@ -107,30 +114,37 @@
 
     <div class="paper-container">
         
-        <h1 class="title">Understanding the Dynamics of Complex Systems: A Comprehensive Approach</h1>
+        <h1 class="title">Leap-SLAM: A Degeneracy-Mitigated Robust LiDAR-Inertial Framework</h1>
 
         <div class="authors">
-            First Author<sup>1</sup>, Second Author<sup>2</sup>, and Third Author<sup>1</sup>
+            Shoubin Chen<sup>1,2</sup>, Jiasheng Chen<sup>1,2</sup>, Baiyang Zhang<sup>1</sup>, Maosheng Yan<sup>1,3</sup>, Jianping Li<sup>4</sup>, Bo Zhang<sup>1,2,*</sup>, and Qingquan Li<sup>1,2</sup>
         </div>
 
         <div class="affiliations">
-            <sup>1</sup> Department of Computer Science, University of Technology<br>
-            <sup>2</sup> Artificial Intelligence Research Institute
+            <span><sup>1</sup> Guangdong Laboratory of Artificial Intelligence and Digital Economy (SZ), Shenzhen 518107, China</span>
+            <span><sup>2</sup> Shenzhen University, Shenzhen 518060, China</span>
+            <span><sup>3</sup> State Key Laboratory of Information Engineering in Surveying Mapping and Remote Sensing (LIESMARS), Wuhan University, Wuhan 430072, China</span>
+            <span><sup>4</sup> China-Singapore International Joint Research Institute (CSIJRI), School of Electrical and Electronic Engineering, Nanyang Technological University, Singapore 639956</span>
+            <br>
+            <span><sup>*</sup> Corresponding author: zhangbo@szu.edu.cn</span>
         </div>
 
         <div class="button-group">
-            <a href="#" class="btn">Paper (PDF)</a>
-            <a href="#" class="btn">Source Code</a>
+            <a href="pdf/2025_07_Leap_SLAM_Manuscript_submission_202601201012.pdf" class="btn">Paper (PDF)</a>
+            <a href="https://github.com/js-ch3n/Leap-SLAM" class="btn">Code (GitHub)</a>
+            <a href="#" class="btn">Video</a>
         </div>
 
         <h2 class="section-title">Abstract</h2>
         <div class="abstract-text">
             <p>
-                This paper presents a novel framework for analyzing the behavior of dynamic systems in uncertain environments. The abstract typically summarizes the core problem, the proposed methodology, and the primary contributions of the research. By utilizing advanced computational models, we demonstrate significant improvements in accuracy and efficiency over existing state-of-the-art methods.
+                With the rapid advancement of embodied robotics, robot inspection and detection in Global Navigation Satellite System (GNSS)-denied tunnels remains challenging. Light Detection and Ranging (LiDAR) based Simultaneous Localization and Mapping (SLAM) often suffers from degeneracy due to the scarcity of geometric features, leading to odometry drift and mapping inconsistencies. In this paper, we propose Leap-SLAM, a degeneracy-mitigated robust LiDAR-Inertial framework that effectively fuses high-localizability constraints via a leapfrogging multi-robot collaboration strategy. Specifically, we design degeneracy indices based on the information matrix for real-time uncertainty estimation. A Beacon Robot (BR) with reflective markers is introduced to provide external stable constraints, enabling a Master Robot (MR) to perform accurate state estimation even in feature-poor environments. Experimental validation in three diverse tunnels demonstrates superior performance over state-of-the-art methods. Notably, Leap-SLAM exhibits exceptional stability, maintaining high trajectory consistency and a negligible drift rate even after long-range traversals in feature-starved tunnels. This methodology offers a practical solution for robotic inspection in geometrically degraded engineering environments.
             </p>
-            <p>
-                Extensive experimental results on multiple benchmark datasets confirm the effectiveness of our approach. Our findings provide a new perspective on system optimization and offer practical guidelines for future implementations in related fields.
-            </p>
+            
+        </div>
+
+        <div class="funding-info">
+            This work was supported by the Director Foundation of Guangdong Laboratory of Artificial Intelligence and Digital Economy(SZ) (25420001, 24420004) and National Natural Science Foundation of China (42101445, 62173234).
         </div>
 
     </div>
