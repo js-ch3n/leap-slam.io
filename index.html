@@ -5,115 +5,233 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leap-SLAM</title>
     <style>
+        /* 基础重置与明亮流动背景 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f4f7f6;
             margin: 0;
             padding: 40px 20px;
+            /* 柔和多彩的渐变背景 */
+            background: linear-gradient(-45deg, #ffd1ff, #fad0c4, #e0c3fc, #8ec5fc);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #2d3748;
+            overflow-x: hidden;
         }
 
+        /* 背景流动动画 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 自定义鼠标跟随圆环 */
+        .cursor-ring {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #5a67d8;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+        }
+
+        /* 核心容器：明亮纯白毛玻璃 */
         .paper-container {
             max-width: 900px;
             margin: 0 auto;
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.55); /* 高透明度白底 */
+            backdrop-filter: blur(25px); /* 强烈的毛玻璃效果 */
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 60px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            animation: floatUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(40px);
         }
 
+        /* 弹性入场动画 */
+        @keyframes floatUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 标题：彩色渐变字 */
         h1.title {
-            font-size: 2.2em;
-            color: #2c3e50;
+            font-size: 2.5em;
             text-align: center;
             margin-top: 0;
             margin-bottom: 25px;
             line-height: 1.3;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 15px rgba(118, 75, 162, 0.15);
         }
 
         .authors {
             font-size: 1.15em;
             text-align: center;
-            color: #34495e;
+            color: #4a5568;
             margin-bottom: 15px;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .affiliations {
             font-size: 0.9em;
             text-align: center;
-            color: #666;
+            color: #718096;
             margin-bottom: 30px;
             font-style: italic;
             line-height: 1.8;
         }
 
-        .affiliations span {
-            display: block;
-        }
+        .affiliations span { display: block; }
 
         .section-title {
             font-size: 1.5em;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
+            color: #2d3748;
+            border-bottom: 3px solid #cbd5e1;
+            padding-bottom: 8px;
             margin-top: 40px;
             margin-bottom: 20px;
+            display: inline-block;
+            position: relative;
+        }
+
+        /* 标题底部彩色下划线特效 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 40px;
+            height: 3px;
+            background: #5a67d8;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .paper-container:hover .section-title::after {
+            width: 100%;
         }
 
         .abstract-text {
             font-size: 1.05em;
             text-align: justify;
-            color: #444;
+            color: #4a5568;
+            line-height: 1.8;
         }
 
         .button-group {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
 
+        /* 糖果色立体浮雕按钮 */
         .btn {
             display: inline-block;
-            padding: 10px 24px;
-            margin: 0 8px;
-            background-color: #2c3e50;
-            color: #ffffff;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+            color: #5a67d8;
             text-decoration: none;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: background-color 0.2s ease;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95em;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 20px rgba(90, 103, 216, 0.15), inset 0 2px 0 rgba(255,255,255,1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* 带有回弹的过渡效果 */
+            position: relative;
+            z-index: 1;
         }
 
         .btn:hover {
-            background-color: #34495e;
+            transform: translateY(-4px) scale(1.05);
+            color: #ffffff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 15px 25px rgba(118, 75, 162, 0.3);
+            border-color: transparent;
         }
 
         .funding-info {
             margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
+            border-top: 1px dashed #cbd5e1;
             font-size: 0.85em;
-            color: #7f8c8d;
+            color: #a0aec0;
             text-align: center;
         }
 
         @media (max-width: 600px) {
-            .paper-container {
-                padding: 30px 20px;
+            .paper-container { padding: 30px 20px; }
+            h1.title { font-size: 1.8em; }
+            .button-group { flex-direction: column; align-items: center; }
+            .btn { width: 80%; }
+        }
+
+        /* 新增 Logo 组的样式 */
+        .logo-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;          /* 调大两个 Logo 之间的间距，让它们不拥挤 */
+            margin: 30px 0;    /* 增加上下间距 */
+        }
+
+        .logo-item {
+            height: 90px;       /* 把这里改大！比如 90px 或 100px */
+            display: flex;
+            align-items: center;
+        }
+
+        
+
+        .logo-item:hover {
+            transform: scale(1.1); /* 鼠标悬停微调 */
+        }
+
+        .logo-item img {
+            max-height: 100%;   /* 确保图片高度跟随父容器 */
+            width: auto;        /* 宽度自动缩放，防止变形 */
+            object-fit: contain;
+            /* 既然是明亮版，可以把之前的去色滤镜去掉，让单位 Logo 的原本色彩亮出来 */
+            filter: none; 
+            opacity: 1;
+        }
+
+        .logo-item:hover img {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .logo-group {
+                gap: 20px;
             }
-            h1.title {
-                font-size: 1.8em;
+            .logo-item {
+                height: 45px;
             }
         }
+
     </style>
 </head>
 <body>
 
+    <div class="cursor-ring" id="cursor-ring"></div>
+
     <div class="paper-container">
-        
         <h1 class="title">Leap-SLAM: A Degeneracy-Mitigated Robust LiDAR-Inertial Framework</h1>
 
         <div class="authors">
@@ -129,10 +247,18 @@
             <span><sup>*</sup> Corresponding author: zhangbo@szu.edu.cn</span>
         </div>
 
+        <div class="logo-group">
+            <div class="logo-item">
+                <img src="pics/gml.png" alt="Institution 1 Logo">
+            </div>
+            <div class="logo-item">
+                <img src="pics/szu.png" alt="Institution 2 Logo">
+            </div>
+        </div>
+
         <div class="button-group">
-            <a href="pdf/2025_07_Leap_SLAM_Manuscript_submission_202601201012.pdf" class="btn">Paper (PDF)</a>
-            <a href="https://github.com/js-ch3n/Leap-SLAM" class="btn">Code (GitHub)</a>
-            <!-- <a href="#" class="btn">Video</a> -->
+            <a href="pdf/2025_07_Leap_SLAM_Manuscript_submission_202601201012.pdf" target="_blank" class="btn">Paper (PDF)</a>
+            <a href="https://github.com/js-ch3n/Leap-SLAM" target="_blank" class="btn">Code (GitHub)</a>
         </div>
 
         <h2 class="section-title">Abstract</h2>
@@ -140,14 +266,57 @@
             <p>
                 With the rapid advancement of embodied robotics, robot inspection and detection in Global Navigation Satellite System (GNSS)-denied tunnels remains challenging. Light Detection and Ranging (LiDAR) based Simultaneous Localization and Mapping (SLAM) often suffers from degeneracy due to the scarcity of geometric features, leading to odometry drift and mapping inconsistencies. In this paper, we propose Leap-SLAM, a degeneracy-mitigated robust LiDAR-Inertial framework that effectively fuses high-localizability constraints via a leapfrogging multi-robot collaboration strategy. Specifically, we design degeneracy indices based on the information matrix for real-time uncertainty estimation. A Beacon Robot (BR) with reflective markers is introduced to provide external stable constraints, enabling a Master Robot (MR) to perform accurate state estimation even in feature-poor environments. Experimental validation in three diverse tunnels demonstrates superior performance over state-of-the-art methods. Notably, Leap-SLAM exhibits exceptional stability, maintaining high trajectory consistency and a negligible drift rate even after long-range traversals in feature-starved tunnels. This methodology offers a practical solution for robotic inspection in geometrically degraded engineering environments.
             </p>
-            
         </div>
 
         <div class="funding-info">
             This work was supported by the Director Foundation of Guangdong Laboratory of Artificial Intelligence and Digital Economy(SZ) (25420001, 24420004) and National Natural Science Foundation of China (42101445, 62173234).
         </div>
-
     </div>
 
+    <script>
+        // --- 丝滑鼠标跟随特效 ---
+        const cursorRing = document.getElementById('cursor-ring');
+        
+        // 增加一点延迟感，让圆环跟随显得更丝滑
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // 动画循环渲染圆环位置
+        function render() {
+            // 平滑插值计算 (Easing)
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            
+            requestAnimationFrame(render);
+        }
+        render();
+
+        // 鼠标悬停在按钮上的交互特效
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                cursorRing.style.width = '50px';
+                cursorRing.style.height = '50px';
+                cursorRing.style.backgroundColor = 'rgba(102, 126, 234, 0.2)';
+                cursorRing.style.borderColor = 'transparent';
+            });
+            btn.addEventListener('mouseleave', () => {
+                cursorRing.style.width = '30px';
+                cursorRing.style.height = '30px';
+                cursorRing.style.backgroundColor = 'transparent';
+                cursorRing.style.borderColor = '#5a67d8';
+            });
+        });
+    </script>
 </body>
 </html>
