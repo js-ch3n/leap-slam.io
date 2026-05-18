@@ -225,6 +225,28 @@
             }
         }
 
+        /* Pipeline 框架图样式 */
+        .pipeline-container {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .pipeline-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px; /* 圆角配合整体风格 */
+            box-shadow: 0 15px 30px rgba(90, 103, 216, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5); /* 柔和的发光阴影 */
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .pipeline-img:hover {
+            transform: scale(1.02); /* 鼠标悬停微微放大 */
+            box-shadow: 0 20px 40px rgba(118, 75, 162, 0.2);
+        }
+
     </style>
 </head>
 <body>
@@ -266,6 +288,13 @@
             <p>
                 With the rapid advancement of embodied robotics, robot inspection and detection in Global Navigation Satellite System (GNSS)-denied tunnels remains challenging. Light Detection and Ranging (LiDAR) based Simultaneous Localization and Mapping (SLAM) often suffers from degeneracy due to the scarcity of geometric features, leading to odometry drift and mapping inconsistencies. In this paper, we propose Leap-SLAM, a degeneracy-mitigated robust LiDAR-Inertial framework that effectively fuses high-localizability constraints via a leapfrogging multi-robot collaboration strategy. Specifically, we design degeneracy indices based on the information matrix for real-time uncertainty estimation. A Beacon Robot (BR) with reflective markers is introduced to provide external stable constraints, enabling a Master Robot (MR) to perform accurate state estimation even in feature-poor environments. Experimental validation in three diverse tunnels demonstrates superior performance over state-of-the-art methods. Notably, Leap-SLAM exhibits exceptional stability, maintaining high trajectory consistency and a negligible drift rate even after long-range traversals in feature-starved tunnels. This methodology offers a practical solution for robotic inspection in geometrically degraded engineering environments.
             </p>
+        </div>
+
+        <!-- Pipeline 框架图区块 -->
+        <h2 class="section-title">Pipeline</h2>
+        <div class="pipeline-container">
+            <!-- 注意：这里需要你放一张 png 或 jpg 格式的图片 -->
+            <img src="pics/overviewPipeline.png" alt="Leap-SLAM Pipeline Framework" class="pipeline-img">
         </div>
 
         <div class="funding-info">
