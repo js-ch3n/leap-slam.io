@@ -130,6 +130,34 @@
             line-height: 1.8;
         }
 
+        .abstract-text a {
+            color: #5a67d8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .abstract-text a:hover {
+            text-decoration: underline;
+        }
+
+        .bibtex-block {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #4a5568;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .sub-title {
+            text-align: center;
+            color: #4a5568;
+            margin-top: 30px;
+            font-size: 1.15em;
+        }
+
         .button-group {
             text-align: center;
             margin-top: 30px;
@@ -190,15 +218,13 @@
         }
 
         .logo-item {
-            height: 90px;       /* 把这里改大！比如 90px 或 100px */
+            height: 90px;
             display: flex;
             align-items: center;
         }
 
-        
-
         .logo-item:hover {
-            transform: scale(1.1); /* 鼠标悬停微调 */
+            transform: scale(1.1);
         }
 
         .logo-item img {
@@ -271,16 +297,23 @@
 
         <div class="logo-group">
             <div class="logo-item">
-                <img src="pics/gml.png" alt="Institution 1 Logo">
+                <img src="pics/gml.png" alt="Guangdong Laboratory of AI and Digital Economy (SZ)">
             </div>
             <div class="logo-item">
-                <img src="pics/szu.png" alt="Institution 2 Logo">
+                <img src="pics/szu.png" alt="Shenzhen University">
             </div>
         </div>
 
         <div class="button-group">
             <a href="pdf/2025_07_Leap_SLAM_Manuscript_submission_202601201012.pdf" target="_blank" class="btn">Paper (PDF)</a>
             <a href="https://github.com/G-SEI-Lab/Leap-SLAM" target="_blank" class="btn">Code (GitHub)</a>
+        </div>
+
+        <h2 class="section-title">News</h2>
+        <div class="abstract-text">
+            <p>
+                🎉 <strong>2026-06-05:</strong> Our paper has been accepted by <strong>Information Fusion</strong>!
+            </p>
         </div>
 
         <h2 class="section-title">Abstract</h2>
@@ -293,8 +326,50 @@
         <!-- Pipeline 框架图区块 -->
         <h2 class="section-title">Pipeline</h2>
         <div class="pipeline-container">
-            <!-- 注意：这里需要你放一张 png 或 jpg 格式的图片 -->
             <img src="pics/overviewPipeline.png" alt="Leap-SLAM Pipeline Framework" class="pipeline-img">
+        </div>
+
+        <h2 class="section-title">Dataset</h2>
+        <div class="abstract-text">
+            <p>
+                All the rosbag data used in this project can be downloaded from <a href="https://drive.google.com/drive/folders/1RPNj-CPB25OUAMc4O0WVA7tBxtr1bqAi?usp=drive_link" target="_blank">Google Drive</a>.
+            </p>
+        </div>
+
+        <h2 class="section-title">Results</h2>
+        <div class="abstract-text">
+            <p>
+                We validated the superiority of our algorithm in three tunnel scenarios. Below are the comparison results with Fast-LIO2.
+            </p>
+        </div>
+
+        <h3 class="sub-title">Tunnel Mapping Length Comparison</h3>
+        <div class="pipeline-container">
+            <img src="pics/3_tunnel_pcd.png" alt="3 Tunnel Point Cloud Comparison" class="pipeline-img" style="width:60%;">
+        </div>
+
+        <h3 class="sub-title">Tunnel Mapping Detail Comparison</h3>
+        <div class="pipeline-container">
+            <img src="pics/exp_compare_leap-fast.png" alt="Leap-SLAM vs Fast-LIO2 Detail Comparison" class="pipeline-img" style="width:30%;">
+        </div>
+
+        <h2 class="section-title">Citation</h2>
+        <div class="abstract-text">
+            <p>If you find this work useful, please cite our paper:</p>
+            <pre class="bibtex-block">@article{chen2026leapslam,
+  title={Leap-SLAM: A Degeneracy-Mitigated Robust LiDAR-Inertial Framework},
+  author={Chen, Shoubin and Chen, Jiasheng and Zhang, Baiyang and Yan, Maosheng and Li, Jianping and Zhang, Bo and Li, Qingquan},
+  journal={Information Fusion},
+  year={2026},
+  note={to appear}
+}</pre>
+        </div>
+
+        <h2 class="section-title">Acknowledgement</h2>
+        <div class="abstract-text">
+            <p>
+                This project is built upon the foundational work of <a href="https://github.com/hku-mars/FAST_LIO" target="_blank">FAST-LIO2</a>. We highly recommend referring to their repository for deeper insights into the core framework.
+            </p>
         </div>
 
         <div class="funding-info">

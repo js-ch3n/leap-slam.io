@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leap-SLAM</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            background: #0b0f19;
+            color: #c8cdd6;
+            padding: 80px 20px 100px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ── Subtle dot-grid overlay ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* ── Subtle top glow ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse at center, rgba(99,102,241,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .paper-container {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            background: rgba(18, 22, 33, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 64px 72px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow:
+                0 4px 24px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,255,255,0.03) inset;
+        }
+
+        /* ── Title ── */
+        h1.title {
+            font-size: 2.0em;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 18px 0;
+            line-height: 1.35;
+            color: #e8ecf1;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #e8ecf1 0%, #a0aec0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Decorative rule ── */
+        .title-rule {
+            width: 48px;
+            height: 3px;
+            margin: 0 auto 24px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            opacity: 0.7;
+        }
+
+        /* ── Authors ── */
+        .authors {
+            font-size: 1.05em;
+            text-align: center;
+            color: #a0aec0;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* ── Affiliations ── */
+        .affiliations {
+            font-size: 0.82em;
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 28px;
+            line-height: 1.8;
+        }
+
+        .affiliations span {
+            display: block;
+        }
+
+        /* ── Logos ── */
+        .logo-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin: 20px 0 28px;
+        }
+
+        .logo-item {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .logo-item:hover {
+            opacity: 0.9;
+        }
+
+        .logo-item img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(0.8);
+            transition: filter 0.3s;
+        }
+
+        .logo-item:hover img {
+            filter: brightness(0) invert(1);
+        }
+
+        /* ── Buttons ── */
+        .button-group {
+            text-align: center;
+            margin: 32px 0 40px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 28px;
+            background: rgba(99,102,241,0.08);
+            color: #a5b4fc;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9em;
+            border: 1px solid rgba(99,102,241,0.25);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.25s;
+            z-index: -1;
+        }
+
+        .btn:hover {
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(99,102,241,0.3), 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        /* ── Section titles ── */
+        .section-title {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #e8ecf1;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+            background: #6366f1;
+            flex-shrink: 0;
+        }
+
+        /* ── Body text ── */
+        .abstract-text {
+            font-size: 0.92em;
+            text-align: justify;
+            color: #9ca3af;
+            line-height: 1.8;
+        }
+
+        .abstract-text a {
+            color: #a5b4fc;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .abstract-text a:hover {
+            color: #c7d2fe;
+            text-decoration: underline;
+        }
+
+        .abstract-text strong {
+            color: #d1d5db;
+        }
+
+        /* ── BibTeX ── */
+        .bibtex-block {
+            background: rgba(0,0,0,0.3);
+            padding: 20px 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.8em;
+            line-height: 1.55;
+            color: #9ca3af;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-family: "SF Mono", "Fira Code", "Consolas", "JetBrains Mono", monospace;
+            position: relative;
+        }
+
+        /* ── Sub headings ── */
+        .sub-title {
+            text-align: center;
+            color: #8b92a0;
+            margin-top: 32px;
+            font-size: 0.95em;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Figures ── */
+        .pipeline-container {
+            margin-top: 14px;
+            margin-bottom: 36px;
+            text-align: center;
+        }
+
+        .pipeline-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .pipeline-img:hover {
+            border-color: rgba(99,102,241,0.3);
+            box-shadow: 0 0 32px rgba(99,102,241,0.08), 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        /* ── News badge ── */
+        .news-badge {
+            display: inline-block;
+            background: rgba(99,102,241,0.12);
+            border: 1px solid rgba(99,102,241,0.25);
+            color: #a5b4fc;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-right: 6px;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Funding ── */
+        .funding-info {
+            margin-top: 52px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.78em;
+            color: #4b5563;
+            text-align: center;
+        }
+
+        /* ── Scroll-reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 600px) {
+            body {
+                padding: 30px 12px 60px;
+            }
+            .paper-container {
+                padding: 36px 24px;
+                border-radius: 12px;
+            }
+            h1.title {
+                font-size: 1.4em;
+            }
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 80%;
+            }
+            .logo-group {
+                gap: 20px;
+            }
+            .logo-item {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="paper-container">
+
+        <h1 class="title">Leap-SLAM: A Degeneracy-Mitigated Robust LiDAR-Inertial Framework</h1>
+        <div class="title-rule"></div>
+
+        <div class="authors">
+            Shoubin Chen<sup>1,2</sup>, Jiasheng Chen<sup>1,2</sup>, Baiyang Zhang<sup>1</sup>, Maosheng Yan<sup>1,3</sup>, Jianping Li<sup>4</sup>, Bo Zhang<sup>1,2,*</sup>, and Qingquan Li<sup>1,2</sup>
+        </div>
+
+        <div class="affiliations">
+            <span><sup>1</sup> Guangdong Laboratory of Artificial Intelligence and Digital Economy (SZ), Shenzhen 518107, China</span>
+            <span><sup>2</sup> Shenzhen University, Shenzhen 518060, China</span>
+            <span><sup>3</sup> State Key Laboratory of Information Engineering in Surveying Mapping and Remote Sensing (LIESMARS), Wuhan University, Wuhan 430072, China</span>
+            <span><sup>4</sup> China-Singapore International Joint Research Institute (CSIJRI), School of Electrical and Electronic Engineering, Nanyang Technological University, Singapore 639956</span>
+            <br>
+            <span><sup>*</sup> Corresponding author: zhangbo@szu.edu.cn</span>
+        </div>
+
+        <div class="logo-group">
+            <div class="logo-item">
+                <img src="pics/gml.png" alt="Guangdong Laboratory of AI and Digital Economy (SZ)">
+            </div>
+            <div class="logo-item">
+                <img src="pics/szu.png" alt="Shenzhen University">
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="pdf/2025_07_Leap_SLAM_Manuscript_submission_202601201012.pdf" target="_blank" class="btn">Paper (PDF)</a>
+            <a href="https://github.com/G-SEI-Lab/Leap-SLAM" target="_blank" class="btn">Code (GitHub)</a>
+        </div>
+
+        <h2 class="section-title">News</h2>
+        <div class="abstract-text">
+            <p>
+                <span class="news-badge">New</span> <strong>2026-06-05:</strong> Our paper has been accepted by <strong>Information Fusion</strong>.
+            </p>
+        </div>
+
+        <h2 class="section-title">Abstract</h2>
+        <div class="abstract-text">
+            <p>
+                With the rapid advancement of embodied robotics, robot inspection and detection in Global Navigation Satellite System (GNSS)-denied tunnels remains challenging. Light Detection and Ranging (LiDAR) based Simultaneous Localization and Mapping (SLAM) often suffers from degeneracy due to the scarcity of geometric features, leading to odometry drift and mapping inconsistencies. In this paper, we propose Leap-SLAM, a degeneracy-mitigated robust LiDAR-Inertial framework that effectively fuses high-localizability constraints via a leapfrogging multi-robot collaboration strategy. Specifically, we design degeneracy indices based on the information matrix for real-time uncertainty estimation. A Beacon Robot (BR) with reflective markers is introduced to provide external stable constraints, enabling a Master Robot (MR) to perform accurate state estimation even in feature-poor environments. Experimental validation in three diverse tunnels demonstrates superior performance over state-of-the-art methods. Notably, Leap-SLAM exhibits exceptional stability, maintaining high trajectory consistency and a negligible drift rate even after long-range traversals in feature-starved tunnels. This methodology offers a practical solution for robotic inspection in geometrically degraded engineering environments.
+            </p>
+        </div>
+
+        <h2 class="section-title">Pipeline</h2>
+        <div class="pipeline-container">
+            <img src="pics/overviewPipeline.png" alt="Leap-SLAM Pipeline Framework" class="pipeline-img">
+        </div>
+
+        <h2 class="section-title">Dataset</h2>
+        <div class="abstract-text">
+            <p>
+                All the rosbag data used in this project can be downloaded from <a href="https://drive.google.com/drive/folders/1RPNj-CPB25OUAMc4O0WVA7tBxtr1bqAi?usp=drive_link" target="_blank">Google Drive</a>.
+            </p>
+        </div>
+
+        <h2 class="section-title">Results</h2>
+        <div class="abstract-text">
+            <p>
+                We validated the superiority of our algorithm in three tunnel scenarios. Below are the comparison results with Fast-LIO2.
+            </p>
+        </div>
+
+        <h3 class="sub-title">Tunnel Mapping Length Comparison</h3>
+        <div class="pipeline-container">
+            <img src="pics/3_tunnel_pcd.png" alt="3 Tunnel Point Cloud Comparison" class="pipeline-img" style="width:60%;">
+        </div>
+
+        <h3 class="sub-title">Tunnel Mapping Detail Comparison</h3>
+        <div class="pipeline-container">
+            <img src="pics/exp_compare_leap-fast.png" alt="Leap-SLAM vs Fast-LIO2 Detail Comparison" class="pipeline-img" style="width:30%;">
+        </div>
+
+        <h2 class="section-title">Citation</h2>
+        <div class="abstract-text">
+            <p>If you find this work useful, please cite our paper:</p>
+            <pre class="bibtex-block">@article{chen2026leapslam,
+  title={Leap-SLAM: A Degeneracy-Mitigated Robust LiDAR-Inertial Framework},
+  author={Chen, Shoubin and Chen, Jiasheng and Zhang, Baiyang and Yan, Maosheng and Li, Jianping and Zhang, Bo and Li, Qingquan},
+  journal={Information Fusion},
+  year={2026},
+  note={to appear}
+}</pre>
+        </div>
+
+        <h2 class="section-title">Acknowledgement</h2>
+        <div class="abstract-text">
+            <p>
+                This project is built upon the foundational work of <a href="https://github.com/hku-mars/FAST_LIO" target="_blank">FAST-LIO2</a>. We highly recommend referring to their repository for deeper insights into the core framework.
+            </p>
+        </div>
+
+        <div class="funding-info">
+            This work was supported by the Director Foundation of Guangdong Laboratory of Artificial Intelligence and Digital Economy(SZ) (25420001, 24420004) and National Natural Science Foundation of China (42101445, 62173234).
+        </div>
+
+    </div>
+
+</body>
+</html>
